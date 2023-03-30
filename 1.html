@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>FemmeBags</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/animate.css">
+	<link href="css/animate.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet" />
+	<link href="css/style.css" rel="stylesheet" />
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<link href="http://localhost/css/style.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+	<header id="header">
+        <nav class="navbar navbar-default navbar-static-top" role="banner">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                   <div class="navbar-brand">
+						<a href="index.php?home.php"><h1>FemmeBags</h1></a>
+					</div>
+                </div>
+                   <div class="navbar-collapse collapse">
+					<div class="menu">
+					<nav>
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation"><a href="index.php?home.php">Home</a></li>
+							<li role="presentation"><a href="index.php?page=produk">Produk</a>
+							<ul>
+								<li role="presentation"><a href="index.php?page=duffel">Duffel Bag</a></li>
+								<li role="presentation"><a href="index.php?page=backpack">Backpack</a></li>
+								<li role="presentation"><a href="index.php?page=sling">Sling Bag</a></li>
+								<li role="presentation"><a href="index.php?page=tote">Tote Bag</a></li>
+								<li role="presentation"><a href="index.php?page=hand">Hand Bag</a></li>
+								<li role="presentation"><a href="index.php?page=clutch">Clutch</a></li>
+							</ul> </li>
+							<li role="presentation"><a href="http://localhost/toko_tas/web2/keranjang.php">Keranjang</a></li>
+
+							<?php if (isset($_SESSION['ID_pembeli'])) {?>
+								<?php if (isset($_SESSION['keranjang'])) { ?>
+									<li role="presentation"><a href="http://localhost/toko_tas/web2/checkout.php">Checkout</a></li>
+								<?php }  ?>
+								<li role="presentation"><a href="http://localhost/login/logout.php" onclick="return confirm ('Apakah Anda yakin ingin log out?')">log out</a></li>
+								<li role="presentation"><a href="http://localhost/toko_tas/web2/data.php">Saya</a></li>
+							<?php } else { ?>
+								<?php if (isset($_SESSION['keranjang'])) { ?>
+									<li role="presentation"><a href="http://localhost/toko_tas/web2/checkout.php">Checkout</a></li>
+								<?php }?>
+								<li role="presentation"><a href="http://localhost/login/index.php" >Log in</a></li>
+								<?php }?>
+						</ul>
+					</nav>
+					</div>
+				</div>
+            </div><!--/.container-->
+        </nav><!--/nav-->
+    </header><!--/header-->
+	<div class="gallery">
+		<div class="text-center">
+			<h2 >Keranjang Anda</h2> <center>
+			<table class="table1 text-center">
+			<tr>
+				<th>No</th>
+				<th>Nama Produk</th>
+				<th>Harga Produk</th>
+				<th>Qty</th>
+				<th>Subtotal</th>
+				<th> Ubah </th>
+				<th>Hapus</th>
+			</tr>
+			<tbody>
+			<?php $nomor=1;?>
+			<?php foreach ($_SESSION['keranjang'] as $kode_tas => $jumlah ): ?>
+			<?php
+				$tampil=$koneksi->query("SELECT * FROM tas where kode_tas='$kode_tas'");
+				$tas=$tampil->fetch_assoc();
+				$subharga=$tas['harga_jual']*$jumlah; ?>
+			<tr>
+				<td><?php echo $nomor;?></td>
+				<td><?php echo $tas['nama_tas'] ?></td>
+				<td>Rp. <?php echo number_format( $tas['harga_jual']) ?></td>
+				<td>
+					<?php echo $jumlah; ?>
+				</td>
+				<td>Rp.<?php echo number_format( $subharga )?></td>
+				<td>
+					<a href="tambah.php?id=<?php echo $kode_tas;?>" class="btn-danger btn-xs">[ + ]</a>
+					<a href="kurang.php?id=<?php echo $kode_tas;?>&jum=<?php echo $jumlah; ?>" class="btn-danger btn-xs">[ - ]</a>
+				</td>
+				<td>
+					<a href="hapus1.php?id=<?php echo $kode_tas;?>" class="btn-danger btn-xs" onclick="return confirm('Apakah Anda yakin menghapus produk ini?')">Hapus</a>
+				</td>
+			</tr>
+			<?php $nomor++;?>
+			<?php endforeach ;?>
+			</tbody>
+		</table> <br></br>
+		<a href="index.php?page=produk" class="btn btn-success">Lanjut Belanja</a>
+		<?php if(isset($_SESSION['keranjang'])) { ?>
+		<button class="btn btn-success" name="checkout">Checkout</button>
+		<?php } else { ?>
+		<button class="btn btn-success" name="produk">Checkout</button>
+		<?php } ?>
+
+		<?php if(isset($_POST['checkout'])) {
+			echo "<script>location='http://localhost/toko_tas/web2/checkout.php';</script>"; }
+		elseif(isset($_POST['produk'])) {
+		echo "<script>alert('Keranjang Anda Kosong, Silahkan Belanja Terlebih Dahulu');"; } ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
